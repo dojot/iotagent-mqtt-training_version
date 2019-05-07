@@ -1,7 +1,7 @@
 {
-  "name": "@dojot/iotagent-mqtt-broadcast",
+  "name": "@dojot/iotagent-mqtt-training_version",
   "version": "0.1.0",
-  "description": "IoT Agent for replicating data to multiple dojot's devices",
+  "description": "MQTT agent capable of sending data in unicast and multicast modes",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
