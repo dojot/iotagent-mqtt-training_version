@@ -184,22 +184,26 @@ class IotAgentMqtt {
     }
 
     _handleCreateEvent(tenant, event) {
-        for(let template in event.data.attrs) {
-            for(let attr of event.data.attrs[template]) {
-                // broadcast
-                if (attr.label.toUpperCase() === 'SN') {
-                    let sn = attr.static_value;
-                    let topicPrefix = `/_dojot/${sn}`;
-                    let deviceId = event.data.id;
-                    return this._addToCaches(topicPrefix, {t: tenant, d: deviceId});
+        if(this._isMqttDevice(event.data)) {
+            for(let template in event.data.attrs) {
+                for(let attr of event.data.attrs[template]) {
+                    // broadcast
+                    if (attr.label.toUpperCase() === 'SN') {
+                        let sn = attr.static_value;
+                        let topicPrefix = `/_dojot/${sn}`;
+                        let deviceId = event.data.id;
+                        return this._addToCaches(topicPrefix, {t: tenant, d: deviceId});
+                    }
                 }
             }
+
+            // unicast
+            let deviceId = event.data.id;
+            let topicPrefix = `/${tenant}/${deviceId}`;
+            return this._addToCaches(topicPrefix, {t: tenant, d: deviceId});
         }
 
-        // unicast
-        let deviceId = event.data.id;
-        let topicPrefix = `/${tenant}/${deviceId}`;
-        return this._addToCaches(topicPrefix, {t: tenant, d: deviceId});
+        return;
     }
 
     _handleUpdateEvent(tenant, event) {
@@ -232,6 +236,26 @@ class IotAgentMqtt {
         else {
             logger.debug(`Ignoring event ${event} for ${tenant}.`);
         }
+    }
+
+    _isMqttDevice(device) {
+        console.log(`is MQTT? (${JSON.stringify(device)})`);
+        if(device.hasOwnProperty('attrs')) {
+            console.log("step 1");
+            for(let template in device.attrs) {
+                console.log("step 2");
+                for(let attr of device.attrs[template]) {
+                    console.log(`attr --> ${JSON.stringify(attr)}`);
+                    // mqtt
+                    if (attr.label.toUpperCase() === 'PROTOCOL' &&
+                    ((typeof attr.static_value === 'string') &&
+                    attr.static_value.toUpperCase() === 'MQTT')) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     init() {
