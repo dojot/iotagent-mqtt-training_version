@@ -239,22 +239,21 @@ class IotAgentMqtt {
     }
 
     _isMqttDevice(device) {
-        console.log(`is MQTT? (${JSON.stringify(device)})`);
+        logger.debug(`is MQTT? (${JSON.stringify(device)})`);
         if(device.hasOwnProperty('attrs')) {
-            console.log("step 1");
             for(let template in device.attrs) {
-                console.log("step 2");
                 for(let attr of device.attrs[template]) {
-                    console.log(`attr --> ${JSON.stringify(attr)}`);
                     // mqtt
                     if (attr.label.toUpperCase() === 'PROTOCOL' &&
                     ((typeof attr.static_value === 'string') &&
                     attr.static_value.toUpperCase() === 'MQTT')) {
+                        logger.debug(`... is MQTT device`);
                         return true;
                     }
                 }
             }
         }
+        logger.debug(`... is not MQTT device.`)
         return false;
     }
 
