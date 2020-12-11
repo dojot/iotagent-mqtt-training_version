@@ -10,7 +10,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@dojot/dojot-module-logger": "^0.0.1-alpha",
-    "@dojot/iotagent-nodejs": "^2.1.0-beta",
+    "@dojot/iotagent-nodejs": "^2.2.0",
     "mosca": "^2.8.0",
     "redis": "^2.8.0"
   }
